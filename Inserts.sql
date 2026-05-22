@@ -1,0 +1,22 @@
+--Inserts en rol
+INSERT INTO rol (nombre_rol, descripcion) VALUES
+('Gerente General',       'Responsable de la operación global del hotel, toma de decisiones estratégicas y supervisión de todos los departamentos.'),
+('Subgerente',            'Apoya al gerente general y lo sustituye en su ausencia; coordina las operaciones diarias.'),
+('Recepcionista',         'Atiende el check-in y check-out de huéspedes, gestiona reservaciones y proporciona información general.'),
+('Conserje',              'Asiste a los huéspedes con solicitudes especiales: transporte, reservas de restaurantes, tours y recomendaciones locales.'),
+('Botones',               'Recibe y acompaña a los huéspedes a su habitación, traslada equipaje y atiende encargos menores.'),
+('Ama de Llaves',         'Supervisa la limpieza y el orden de habitaciones, áreas comunes y lencería del hotel.'),
+('Camarero/a de Pisos',   'Limpia y prepara las habitaciones según los estándares del hotel; reporta desperfectos al mantenimiento.'),
+('Lavandería',            'Encargado del lavado, secado, planchado y entrega de ropa de cama, toallas y uniformes.'),
+('Chef Ejecutivo',        'Dirige la cocina, diseña el menú, controla calidad de alimentos y gestiona al equipo culinario.'),
+('Cocinero',              'Prepara los platillos del menú bajo la dirección del chef; mantiene higiene en su área de trabajo.'),
+('Mesero/a',              'Toma órdenes, sirve alimentos y bebidas en restaurante o servicio a la habitación, y cobra consumos.'),
+('Bartender',             'Prepara y sirve bebidas alcohólicas y no alcohólicas en el bar del hotel; mantiene el inventario de licores.'),
+('Seguridad',             'Supervisa el acceso al hotel, monitorea cámaras y garantiza la seguridad de huéspedes y personal.'),
+('Mantenimiento',         'Realiza reparaciones, mantenimiento preventivo e instalaciones eléctricas, hidráulicas y de climatización.'),
+('Coordinador de Eventos','Planifica, organiza y supervisa eventos, banquetes, conferencias y reuniones celebradas en el hotel.'),
+('Agente de Reservaciones','Gestiona reservaciones por teléfono, correo y plataformas digitales; verifica disponibilidad y tarifas.'),
+('Contador/a',            'Administra la contabilidad general, nóminas, facturación y reportes financieros del hotel.'),
+('Recursos Humanos',      'Recluta, capacita y gestiona al personal; administra contratos, prestaciones y clima laboral.'),
+('Marketing y Ventas',    'Diseña estrategias de promoción, gestiona redes sociales, campañas publicitarias y alianzas comerciales.'),
+('Spa Terapeuta',         'Ofrece servicios de masajes, tratamientos corporales y faciales a los huéspedes en el área de spa.');
