@@ -6,27 +6,27 @@ USE hotel;
 CREATE table rol(
 id INT auto_increment primary key,
 nombre_rol VARCHAR(50),
-descripcion VARCHAR(255)
+descripcion TEXT
 )AUTO_INCREMENT = 4000;
 
 CREATE table categoria_serv(
 id INT auto_increment primary key,
 tipo VARCHAR(10),
-descripcion VARCHAR(250),
+descripcion TEXT,
 estado TINYINT(1)
 )AUTO_INCREMENT = 4000;
 
 CREATE table categoria_habitacion(
 id INT auto_increment primary key,
-precio_nocje FLOAT,
-descripcion VARCHAR(200)
+precio_noche FLOAT,
+descripcion TEXT
 )AUTO_INCREMENT = 4000;
 
 CREATE table cliente(
 id INT auto_increment primary key,
 nombre VARCHAR(50),
 apellido VARCHAR(50),
-telefono INT,
+telefono VARCHAR(20),
 direccion VARCHAR(50),
 tipo VARCHAR(20),
 correo VARCHAR(50),
@@ -40,7 +40,7 @@ id_rol INT,
 fecha_creacion DATE,
 estado TINYINT(1),
 telefono VARCHAR(20),
-contrasena VARCHAR(255),
+contrasena TEXT,
 correo VARCHAR(100),
 foreign key (id_rol) references rol(id)
 )AUTO_INCREMENT = 4000;
@@ -49,10 +49,10 @@ CREATE table empleado(
 id INT auto_increment primary key,
 id_usuario INT,
 puesto VARCHAR(20),
-saslario FLOAT(10,2),
+salario FLOAT(10,2),
 direccion VARCHAR(250),
 fecha_cont DATE,
-telefono INT(20),
+telefono VARCHAR(20),
 nombre VARCHAR(100),
 apellido VARCHAR(100),
 foreign key (id_usuario) references usuario(id)
@@ -115,11 +115,10 @@ foreign key (id_habitacion) references habitacion(id)
 
 CREATE table satisfaccion(
 id INT auto_increment primary key,
-fecha DATE,
-hora DATETIME,
+fecha_hora DATETIME,
 cal_servicio INT,
 cal_general INT,
-comentarios VARCHAR(200),
+comentarios TEXT,
 id_estancia INT,
 FOREIGN KEY (id_estancia) references estancia(id)
 )AUTO_INCREMENT = 4000;
@@ -132,7 +131,7 @@ id_empleado INT,
 estado VARCHAR(25),
 fecha DATE,
 hora TIME,
-descripcion VARCHAR(250),
+descripcion TEXT,
 foreign key (id_cliente) references cliente(id),
 foreign key (id_estancia) references estancia(id),
 foreign key (id_empleado) references empleado(id)
@@ -141,7 +140,7 @@ foreign key (id_empleado) references empleado(id)
 CREATE table fondo(
 id INT auto_increment primary key,
 id_reservacion INT,
-motivo_rete VARCHAR(255),
+motivo_rete TEXT,
 monto_rete FLOAT(10,2),
 monto_fondo FLOAT(10,2),
 monto_dev FLOAT (10,2),
@@ -155,7 +154,7 @@ id_reservacion INT,
 id_fondo INT,
 monto FLOAT(10,2),
 monto_dev FLOAT(10,2),
-moptivo VARCHAR(250),
+motivo TEXT,
 fecha DATE,
 foreign key (id_reservacion) references reservacion(id),
 foreign key (id_fondo) references fondo(id)
@@ -189,7 +188,7 @@ CREATE table servicio(
 id INT auto_increment primary key,
 id_categoria_serv INT,
 nombre VARCHAR(50),
-descripcion VARCHAR(250),
+descripcion TEXT,
 estado TINYINT(1),
 precio FLOAT(10,2),
 foreign key (id_categoria_serv) references categoria_serv(id)
@@ -214,7 +213,7 @@ id_servicio INT,
 id_reservacion INT,
 descuento FLOAT(10,2),
 nombre VARCHAR(50),
-descripcion VARCHAR(250),
+descripcion TEXT,
 estado TINYINT(1),
 precio FLOAT(10,2),
 fecha_inicio DATE,
