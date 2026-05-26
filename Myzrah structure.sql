@@ -28,10 +28,12 @@ nombre VARCHAR(50),
 apellido VARCHAR(50),
 telefono VARCHAR(20),
 direccion VARCHAR(50),
+pais VARCHAR(60),
 tipo VARCHAR(20),
 correo VARCHAR(50),
 sexo CHAR,
-rfc VARCHAR(25)
+rfc VARCHAR(25),
+contador_reservas INT DEFAULT 0
 )AUTO_INCREMENT = 4000;
 
 CREATE table usuario(
@@ -104,14 +106,29 @@ CREATE table estancia(
 id INT auto_increment primary key,
 id_reservacion INT,
 id_habitacion INT,
+id_empleado INT,
 fecha_checkin DATE,
 fecha_checkout DATE,
 hora_checkin TIME,
 hora_checkout TIME,
 estado TINYINT,
 foreign key (id_reservacion) references reservacion(id),
-foreign key (id_habitacion) references habitacion(id)
+foreign key (id_habitacion) references habitacion(id),
+foreign key (id_empleado) references empleado(id)
 )AUTO_INCREMENT = 4000;
+
+CREATE table bitacora_habitacion(
+id INT auto_increment primary key,
+id_habitacion INT,
+id_estancia INT,
+id_empleado INT,
+estado_anterior VARCHAR(25),
+estado_nuevo VARCHAR(25),
+fecha_hora DATETIME DEFAULT NOW(),
+foreign key (id_habitacion) references habitacion(id),
+foreign key (id_estancia) references estancia(id),
+foreign key (id_empleado) references empleado(id)
+)AUTO_INCREMENT = 6000;
 
 CREATE table satisfaccion(
 id INT auto_increment primary key,
@@ -229,6 +246,7 @@ id INT auto_increment primary key,
 id_nomina INT,
 monto FLOAT(10,2),
 emisor VARCHAR(20),
+fecha_inicio DATE,
 fecha_fin DATE,
 foreign key(id_nomina) references nomina(id)
 )AUTO_INCREMENT = 4000;

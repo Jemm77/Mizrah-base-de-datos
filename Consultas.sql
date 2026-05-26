@@ -127,3 +127,106 @@ WHERE r.id = e.id_reservacion
 GROUP BY ch.descripcion
 ORDER BY COUNT(r.id) DESC;
 
+--Consulta 16 me da hueva
+
+
+--Consulta 17 Reporte de número de reservas por país de origen del cliente.
+SELECT c.pais, COUNT(r.id)
+FROM cliente c, reservacion r
+WHERE c.id = r.id_cliente
+GROUP BY c.pais
+ORDER BY COUNT(r.id) DESC;
+
+
+--Consulta 18 Promedio de facturación diaria (utilizar rango de fechas) para conocer la tendencia de ingresos por
+día.
+SELECT f.fecha, SUM(f.total)
+FROM factura f
+WHERE f.fecha >= '2025-01-01'
+  AND f.fecha <= '2025-05-24'
+GROUP BY f.fecha
+ORDER BY f.fecha;
+
+--Consulta 19 Clientes sin email registrado.
+SELECT c.nombre, c.apellido, c.telefono
+FROM cliente c
+WHERE c.correo IS NULL;
+
+--Consulta 20 Reporte de clientes VIP hospedados actualmente (utilizar rango de fechas)
+SELECT c.nombre, c.apellido, e.fecha_checkin, r.fecha_salida
+FROM cliente c, reservacion r, estancia e
+WHERE c.id = r.id_cliente
+  AND r.id = e.id_reservacion
+  AND c.tipo = 'VIP'
+  AND e.fecha_checkin >= '2025-05-01'
+  AND e.fecha_checkin <= '2025-05-31'
+  AND e.fecha_checkout IS NULL;
+
+--Consulta 21 Reporte para auditar los cambios de estado de una habitación específica la cual debe mostrar
+--reserva, cliente, fecha, costo, nombre de agente de mostrador.
+SELECT b.fecha_hora, b.estado_anterior, b.estado_nuevo,
+       c.nombre, c.apellido,
+       emp.nombre, emp.apellido,
+       r.id, f.total
+FROM bitacora_habitacion b, estancia e, reservacion r, cliente c, empleado emp, factura f
+WHERE b.id_estancia = e.id
+  AND e.id_reservacion = r.id
+  AND r.id_cliente = c.id
+  AND b.id_empleado = emp.id
+  AND f.id_reservacion = r.id
+  AND b.id_habitacion = 3001;
+
+
+--Consulta 22 Reporte de facturas sin pagar o pendientes de pago (utilizar rango de fechas).
+SELECT c.nombre, c.apellido, f.fecha, f.total, f.estado_pago
+FROM cliente c, factura f
+WHERE c.id = f.id_cliente
+  AND f.estado_pago = 'Pendiente'
+  AND f.fecha >= '2025-01-01'
+  AND f.fecha <= '2025-05-24';
+
+--Consulta 23  Listado de reservas expiradas que no se actualizaron (con el enfoque en la detección de errores de
+--operaciones).
+SELECT c.nombre, c.apellido, r.fecha_entrada, r.fecha_salida, r.estado
+FROM cliente c, reservacion r
+WHERE c.id = r.id_cliente
+  AND r.fecha_salida < '2025-05-25'
+  AND r.estado NOT IN ('Completada', 'Cancelada');
+
+--Consulta 24 me da hueva
+
+--Consulta 25 me da hueva x2
+
+--Consulta 26 Reporte de empleados y el bono acumulado por rango de fechas específico.
+SELECT e.nombre, SUM(b.monto)
+FROM empleado e, nomina n, bono b
+WHERE e.id = n.id_empleado
+  AND n.id = b.id_nomina
+  AND b.fecha_inicio >= '2025-01-01'
+  AND b.fecha_fin <= '2025-05-24'
+GROUP BY e.id, e.nombre, e.apellido;
+
+--Consulta 27 Listado servicios mas utilizados por Clientes VIP.
+SELECT s.nombre, SUM(cs.cantidad)
+FROM servicio s, consumo_servicio cs, estancia e, reservacion r, cliente c
+WHERE s.id = cs.id_servicio
+  AND cs.id_estancia = e.id
+  AND e.id_reservacion = r.id
+  AND r.id_cliente = c.id
+  AND c.tipo = 'VIP'
+GROUP BY s.id, s.nombre
+ORDER BY SUM(cs.cantidad) DESC;
+
+--Consulta 28 Reporte de quejas registradas en base a un rango de fechas dado y clasificado por el departamento
+--al que fue aplicada la queja
+SELECT emp.puesto, COUNT(q.id)
+FROM queja q, empleado emp
+WHERE q.id_empleado = emp.id
+  AND q.fecha >= '2025-01-01'
+  AND q.fecha <= '2025-05-31'
+GROUP BY emp.puesto
+ORDER BY COUNT(q.id) DESC;
+
+--Consulta 29 Se necesita vincular satisfaccion a empleado
+
+--Consulta 30 me da hueva x3
