@@ -164,6 +164,8 @@ CREATE table factura(
 id INT auto_increment primary key,
 id_cliente INT,
 id_reservacion INT,
+fecha DATE,
+estado_pago VARCHAR(20) DEFAULT 'Pendiente',
 descuento FLOAT,
 metodo VARCHAR(25),
 retenciones FLOAT,
