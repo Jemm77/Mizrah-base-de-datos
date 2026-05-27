@@ -250,3 +250,10 @@ fecha_inicio DATE,
 fecha_fin DATE,
 foreign key(id_nomina) references nomina(id)
 )AUTO_INCREMENT = 4000;
+
+CREATE table clientes_potenciales_vip(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    fecha_registro DATE,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+);
