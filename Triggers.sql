@@ -12,7 +12,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
 -- b. Al terminar la estancia, liberar automaticamente la habitacion
 DELIMITER //
 CREATE TRIGGER tr_checkout_libera_habitacion
@@ -26,7 +25,6 @@ END //
 DELIMITER ;
 
 -- c. Llevar una bitacora cada vez que cambie de estado una habitacion
-
 DELIMITER //
 CREATE TRIGGER tr_bitacora_habitacion
 AFTER UPDATE ON habitacion
@@ -38,8 +36,6 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
-
 
 -- d. Cada vez que un cliente se registre, agregarlo a clientes_potenciales_vip
 DELIMITER //
@@ -53,7 +49,6 @@ END //
 DELIMITER ;
 
 -- e. Cada vez que un cliente VIP hace una reserva actualizar su contador personal
-
 DELIMITER //
 CREATE TRIGGER tr_contador_vip
 AFTER INSERT ON reservacion
@@ -67,7 +62,6 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
 
 -- f. Validar que fecha_salida sea mayor que fecha_entrada
 DELIMITER //
@@ -94,8 +88,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
-
 -- g. Control automatico del inventario de habitaciones
 DELIMITER //
 CREATE TRIGGER tr_inventario_habitacion
@@ -113,7 +105,6 @@ END //
 DELIMITER ;
 
 -- h. Si la fecha de entrada pasa y no se hizo check-in, cancelar reserva de forma automatica
-
 SET GLOBAL event_scheduler = ON;
 
 DELIMITER //
@@ -130,7 +121,6 @@ BEGIN
       AND e.id IS NULL;
 END //
 DELIMITER ;
-
 
 -- i. Evitar servicios registrados con precios negativos o cero
 DELIMITER //
@@ -156,8 +146,6 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
-
 
 -- j. Cancelacion de una reserva se penaliza con 55% del costo si esta fuera de plazo
 DELIMITER //
