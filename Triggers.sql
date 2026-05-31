@@ -1,31 +1,26 @@
 USE hotel;
 
 -- a. Cuando un cliente realiza check-in, la habitacion cambia a "Ocupado"
-
 DELIMITER //
 CREATE TRIGGER tr_checkin_ocupa_habitacion
 AFTER INSERT ON estancia
 FOR EACH ROW
 BEGIN
     IF NEW.fecha_checkin IS NOT NULL THEN
-        UPDATE habitacion
-        SET estado = 'Ocupado'
-        WHERE id = NEW.id_habitacion;
+        UPDATE habitacion SET estado = 'Ocupado' WHERE id = NEW.id_habitacion;
     END IF;
 END //
 DELIMITER ;
 
--- b. Al terminar la estancia, liberar automaticamente la habitacion
 
+-- b. Al terminar la estancia, liberar automaticamente la habitacion
 DELIMITER //
 CREATE TRIGGER tr_checkout_libera_habitacion
 AFTER UPDATE ON estancia
 FOR EACH ROW
 BEGIN
-    IF (OLD.fecha_checkout IS NULL AND NEW.fecha_checkout IS NOT NULL) THEN
-        UPDATE habitacion
-        SET estado = 'Disponible'
-        WHERE id = NEW.id_habitacion;
+    IF NEW.fecha_checkout IS NOT NULL THEN
+        UPDATE habitacion SET estado = 'Disponible' WHERE id = NEW.id_habitacion;
     END IF;
 END //
 DELIMITER ;
@@ -38,23 +33,22 @@ AFTER UPDATE ON habitacion
 FOR EACH ROW
 BEGIN
     IF OLD.estado <> NEW.estado THEN
-        INSERT INTO bitacora_habitacion(
-            id_habitacion, estado_anterior, estado_nuevo, fecha_hora
-        )
+        INSERT INTO bitacora_habitacion(id_habitacion, estado_anterior, estado_nuevo, fecha_hora)
         VALUES (NEW.id, OLD.estado, NEW.estado, NOW());
     END IF;
 END //
 DELIMITER ;
 
--- d. Cada vez que un cliente se registre, agregarlo a clientes_potenciales_vip
 
+
+-- d. Cada vez que un cliente se registre, agregarlo a clientes_potenciales_vip
 DELIMITER //
 CREATE TRIGGER tr_cliente_potencial_vip
 AFTER INSERT ON cliente
 FOR EACH ROW
 BEGIN
     INSERT INTO clientes_potenciales_vip(id_cliente, fecha_registro)
-    VALUES (NEW.id, NOW());
+    VALUES (NEW.id, CURDATE());
 END //
 DELIMITER ;
 
@@ -66,21 +60,16 @@ AFTER INSERT ON reservacion
 FOR EACH ROW
 BEGIN
     DECLARE v_tipo VARCHAR(20);
-
-    SELECT tipo INTO v_tipo
-    FROM cliente
-    WHERE id = NEW.id_cliente;
+    SELECT tipo INTO v_tipo FROM cliente WHERE id = NEW.id_cliente;
 
     IF v_tipo = 'VIP' THEN
-        UPDATE cliente
-        SET contador_reservas = contador_reservas + 1
-        WHERE id = NEW.id_cliente;
+        UPDATE cliente SET contador_reservas = contador_reservas + 1 WHERE id = NEW.id_cliente;
     END IF;
 END //
 DELIMITER ;
 
--- f. Validar que fecha_salida sea menor que fecha_entrada
 
+-- f. Validar que fecha_salida sea mayor que fecha_entrada
 DELIMITER //
 CREATE TRIGGER tr_valida_fechas_reservacion_ins
 BEFORE INSERT ON reservacion
@@ -88,7 +77,7 @@ FOR EACH ROW
 BEGIN
     IF NEW.fecha_salida <= NEW.fecha_entrada THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: la fecha de salida debe ser mayor que la fecha de entrada.';
+        SET MESSAGE_TEXT = 'La fecha de salida debe ser mayor que la fecha de entrada.';
     END IF;
 END //
 DELIMITER ;
@@ -100,27 +89,25 @@ FOR EACH ROW
 BEGIN
     IF NEW.fecha_salida <= NEW.fecha_entrada THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: la fecha de salida debe ser mayor que la fecha de entrada.';
+        SET MESSAGE_TEXT = 'La fecha de salida debe ser mayor que la fecha de entrada.';
     END IF;
 END //
 DELIMITER ;
 
--- g. Control automatico del inventario de habitaciones
 
+
+-- g. Control automatico del inventario de habitaciones
 DELIMITER //
 CREATE TRIGGER tr_inventario_habitacion
 BEFORE INSERT ON estancia
 FOR EACH ROW
 BEGIN
     DECLARE v_estado VARCHAR(25);
-
-    SELECT estado INTO v_estado
-    FROM habitacion
-    WHERE id = NEW.id_habitacion;
+    SELECT estado INTO v_estado FROM habitacion WHERE id = NEW.id_habitacion;
 
     IF v_estado <> 'Disponible' THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: la habitación no está disponible para asignarla.';
+        SET MESSAGE_TEXT = 'La habitacion no esta disponible.';
     END IF;
 END //
 DELIMITER ;
@@ -144,16 +131,16 @@ BEGIN
 END //
 DELIMITER ;
 
--- i.  Evitar servicios registrados con precios negativos o cero
 
+-- i. Evitar servicios registrados con precios negativos o cero
 DELIMITER //
 CREATE TRIGGER tr_valida_precio_servicio_ins
 BEFORE INSERT ON servicio
 FOR EACH ROW
 BEGIN
-    IF NEW.precio IS NULL OR NEW.precio <= 0 THEN
+    IF NEW.precio <= 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: el precio del servicio debe ser mayor que cero.';
+        SET MESSAGE_TEXT = 'El precio del servicio debe ser mayor que cero.';
     END IF;
 END //
 DELIMITER ;
@@ -163,15 +150,16 @@ CREATE TRIGGER tr_valida_precio_servicio_upd
 BEFORE UPDATE ON servicio
 FOR EACH ROW
 BEGIN
-    IF NEW.precio IS NULL OR NEW.precio <= 0 THEN
+    IF NEW.precio <= 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: el precio del servicio debe ser mayor que cero.';
+        SET MESSAGE_TEXT = 'El precio del servicio debe ser mayor que cero.';
     END IF;
 END //
 DELIMITER ;
 
--- j. Cancelación de una reserva se penaliza con 55% del costo de su reserva si esta fuera de plazo
 
+
+-- j. Cancelacion de una reserva se penaliza con 55% del costo si esta fuera de plazo
 DELIMITER //
 CREATE TRIGGER tr_cancelacion_penalizacion
 BEFORE INSERT ON cancelacion
@@ -180,19 +168,13 @@ BEGIN
     DECLARE v_fecha_entrada DATE;
     DECLARE v_dias INT;
 
-    SELECT fecha_entrada INTO v_fecha_entrada
-    FROM reservacion
-    WHERE id = NEW.id_reservacion;
-
+    SELECT fecha_entrada INTO v_fecha_entrada FROM reservacion WHERE id = NEW.id_reservacion;
     SET v_dias = DATEDIFF(v_fecha_entrada, NEW.fecha);
 
     IF v_dias >= 3 THEN
-        -- Dentro del rango permitido: devolución completa
         SET NEW.monto_dev = NEW.monto;
     ELSE
-        -- Fuera del rango permitido: penalización del 55%
         SET NEW.monto_dev = NEW.monto * 0.45;
     END IF;
 END //
 DELIMITER ;
-
