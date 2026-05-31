@@ -139,7 +139,7 @@ ORDER BY COUNT(r.id) DESC;
 
 
 --Consulta 18 Promedio de facturación diaria (utilizar rango de fechas) para conocer la tendencia de ingresos por
-día.
+--día.
 SELECT f.fecha, SUM(f.total)
 FROM factura f
 WHERE f.fecha >= '2025-01-01'

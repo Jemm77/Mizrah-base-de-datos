@@ -99,7 +99,9 @@ foreign key (id_cliente) references cliente(id)
 CREATE table detalle_reservacion(
 id INT auto_increment primary key,
 id_reservacion INT,
-foreign key (id_reservacion) references reservacion(id)
+id_habitacion INT,
+foreign key (id_reservacion) references reservacion(id),
+foreign key (id_habitacion) references habitacion(id)
 )AUTO_INCREMENT = 2000;
 
 CREATE table estancia(
